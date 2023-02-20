@@ -1,0 +1,19 @@
+module Momentum
+
+using LinearAlgebra
+using SparseArrays
+
+export jfnk
+
+function jfnk(CSolution, maxiter, toleran, concoef)
+  
+  M = CSolution.m2
+  N = CSolution.n2
+
+  A = sparse(1.0I, 2*M*N, 2*M*N)
+
+  zero_guess = zeros(2*M*N)
+
+end
+
+end

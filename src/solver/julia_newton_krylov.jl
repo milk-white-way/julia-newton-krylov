@@ -16,15 +16,21 @@
 # ====== pressure: scalar pressure field
 # ====== time: time
 
-include("../initialization/init.jl")
+include("./initialization/init.jl")
+include("./momentum/jfnk.jl")
 ## GETTING LIBRARIES
+using Pkg
+Pkg.add("LinearAlgebra")
+Pkg.add("Debugger")
+
 using LinearAlgebra
 using Debugger
 using .Initialization
+using .Momentum
 
 ## SCHEME CONSTANTS
-const MAX::UInt8 = 100
-const TOL::Float64 = 1.0e-5
+const MAX_ITERATION::UInt8 = 100
+const TOLERANCE::Float64 = 1.0e-5
 
 ## PROBLEM CONSTANTS
 const SYS2D_LENGTH_X::Float64 = pi
@@ -42,7 +48,7 @@ const ENDO_TIME::UInt8 = 10
 const REN_NUM::UInt8 = 100
 const DYN_VIS::UInt8 = 1
 
-CONVECTIVE_COEFFICIENT::Float64 = 0.128 # 1/8
+const CONVECTIVE_COEFFICIENT::Float64 = 0.128 # 1/8
 
 # Creating solution structure containing:
 #   Constants: lengths, spatial dimensions, spatial steps, time step, end time, reynolds number, viscosity
@@ -97,47 +103,11 @@ init(CSolution,
      STEP_TIME, ENDO_TIME,
      REN_NUM, DYN_VIS)
 
-#=
-for steptime in 1:TOTALTIME
-  # Calculate current time
-    global time = steptime*TIMESTEP
-  # Initialize previous solution
-  Pstep = Solution(0, 0, u_cont_x, u_cont_y, 
-                   u_cart_x, u_cart_y, 
-                   u_bc_x, u_bc_y,
-                   pressure, 
-                   REN_NUM,
-                   DYN_VIS,
-                   XSTEP,
-                   YSTEP,
-                   TIMESTEP,
-                   time,
-                   X_AFTER_GHOST,
-                   Y_AFTER_GHOST,
-                   u_cont_x,
-                   u_cont_y
-                )
-  # Forming Boundary Conditions
-  # Calculate RHS vector
-  ## Convective Flux
-    for runix in 1:Pstep.m2
-        for runiz in 1:Pstep.n2
-            u_conv = 0.5 * Pstep.u_cont_x[runix, runiz]
+current_time::Float64 = 0.0
+timestep::UInt32      = 1
 
-            up = u_conv + abs(u_conv) #???
-            um = u_conv - abs(u_conv) #???
+#while current_time < CSolution.et
+  global current_time = timestep*CSolution.dt
 
-
-        end
-    end
-  ## Viscous Flux
-
-  ## Pressure Gradient
-
-  # Solving the Momentum Equation using Jacobian-free Newton Krylov
-
-end
-=#
-
-# Taylor-Green
-# NEED TO UNDERSTAND ALGORITHM
+  jfnk(CSolution, MAX_ITERATION, TOLERANCE, CONVECTIVE_COEFFICIENT)
+#end
