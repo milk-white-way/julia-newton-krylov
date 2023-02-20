@@ -55,36 +55,48 @@ const CONVECTIVE_COEFFICIENT::Float64 = 0.128 # 1/8
 #   Variables: cartesian velocity field, curvilinear velocity field, boundary conditions, initial velocity field (in cartesian), pressure field
 #mutable struct Constant2D
 mutable struct Solution2D
-    length_x::Float64
-    length_y::Float64
-    m2::UInt8
-    n2::UInt8
-    dx::Float64
-    dy::Float64
-    dt::Float64
-    et::UInt8
-    ren::UInt8
-    vis::Float64
+  length_x::Float64
+  length_y::Float64
+  m2::UInt8
+  n2::UInt8
+  dx::Float64
+  dy::Float64
+  dt::Float64
+  et::UInt8
+  ren::UInt8
+  vis::Float64
 #end
 
 #mutable struct Variable2D
-    ucat_x::Matrix{Float64}
-    ucat_y::Matrix{Float64}
-    ucur_x::Matrix{Float64}
-    ucur_y::Matrix{Float64}
-    ubcs_x::Matrix{Float64}
-    ubcs_y::Matrix{Float64}
-    uini_x::Matrix{Float64}
-    uini_y::Matrix{Float64}
-     press::Matrix{Float64}
+  ucat_x::Matrix{Float64}
+  ucat_y::Matrix{Float64}
+  ucur_x::Matrix{Float64}
+  ucur_y::Matrix{Float64}
+  ubcs_x::Matrix{Float64}
+  ubcs_y::Matrix{Float64}
+  uini_x::Matrix{Float64}
+  uini_y::Matrix{Float64}
+    pres::Matrix{Float64}
 #end
 
+  conv_flux_x::Matrix{Float64}
+  conv_flux_y::Matrix{Float64}
+  visc_flux_x::Matrix{Float64}
+  visc_flux_y::Matrix{Float64}
+  pres_grad_x::Matrix{Float64}
+  pres_grad_y::Natrix{Float64}
+  rhs_x::Matrix{Float64}
+  rhs_y::Matrix{Float64}
 #mutable struct Solution2D
 #    con::Constant2D
 #    var::Variable2D
 end
 
 CSolution = Solution2D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                       Matrix{Float64}(undef, SYS2D_GHOST_X, SYS2D_GHOST_Y),
+                       Matrix{Float64}(undef, SYS2D_GHOST_X, SYS2D_GHOST_Y),
+                       Matrix{Float64}(undef, SYS2D_GHOST_X, SYS2D_GHOST_Y),
+                       Matrix{Float64}(undef, SYS2D_GHOST_X, SYS2D_GHOST_Y),
                        Matrix{Float64}(undef, SYS2D_GHOST_X, SYS2D_GHOST_Y),
                        Matrix{Float64}(undef, SYS2D_GHOST_X, SYS2D_GHOST_Y),
                        Matrix{Float64}(undef, SYS2D_GHOST_X, SYS2D_GHOST_Y),

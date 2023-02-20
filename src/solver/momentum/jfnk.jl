@@ -14,6 +14,9 @@ function jfnk(CSolution, maxiter, toleran, concoef)
 
   zero_guess = zeros(2*M*N)
 
+  # Input zero guess into RHS function
+  # Calculate the value of RHS
+  # Calulate norm
 end
 
 end
